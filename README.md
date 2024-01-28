@@ -1,6 +1,6 @@
 # Vector Search & AI Assistant for PostgreSQL and Azure Cognitive Search (aka Bring Your Data to ChatGPT)
 
-This solution demonstrates how to design and implement a RAG Pattern solution that incorporates PostgreSQL with Azure OpenAI Service and Azure Cognitive Search to build a vector search solution with an AI assistant user interface. The solution shows how to generate vectors on data stored in Azure Cosmos DB using Azure OpenAI Service, how to implement vector search using the vector search capability of Azure Cognitive Search and get the response from Azure OpenAI Service's ChatGPT using the matched documents as a context. The solution includes the frontend and backend components hosted on Azure Kubernetes Service. The solution also showcases key concepts such as managing conversational context and history, managing tokens consumed by Azure OpenAI Service, as well as understanding how to write prompts for large language models such as ChatGPT so they produce the desired responses.
+This solution demonstrates how to design and implement a RAG Pattern solution that incorporates PostgreSQL with Azure OpenAI Service and Azure Cognitive Search to build a vector search solution with an AI assistant user interface. The solution shows how to generate vectors on data stored in PostgreSQL using Azure OpenAI Service, how to implement vector search using the vector search capability of Azure Cognitive Search and get the response from Azure OpenAI Service's ChatGPT using the matched documents as a context. The solution includes the frontend and backend components hosted on Azure Kubernetes Service. The solution also showcases key concepts such as managing conversational context and history, managing tokens consumed by Azure OpenAI Service, as well as understanding how to write prompts for large language models such as ChatGPT so they produce the desired responses.
 
 The scenario for this sample centers around a consumer retail "Intelligent Agent" that allows users to ask questions on vectorized product, customer and sales order data stored in the database. The data in this solution is the [Cosmic Works](https://github.com/azurecosmosdb/cosmicworks) sample for Azure Cosmos DB. This data is an adapted subset of the [Adventure Works 2017 dataset](https://learn.microsoft.com/en-us/sql/samples/adventureworks-install-configure?view=sql-server-ver16&tabs=ssms) for a retail bike shop that sells bicycles, biking accessories, components and clothing.
 
@@ -29,12 +29,11 @@ The solution architecture is represented by this diagram:
 
 ## Overall solution workflow
 
-There are four key elements of this solution: generating vectors, searching vectors, generating chat completions and storing chat conversations. Vectors are generated when data is inserted into PostgreSQL, then stored in an Azure Cognitive Search index that is used for vector searches. Users then ask natural language questions using the web-based chat user interface (User Prompts). These prompts are then vectorized and used to search the vectorized data. The results are then sent, along with some of the conversation history, to Azure OpenAI Service to generate a response (Completion) back to the user. All of the User Prompts and Completions are stored in a Cosmos DB container along with the number of tokens consumed by each Prompt and Completion. A Chat Session contains all of the prompts and completions and a running total of all tokens consumed for that session. In a production environment users would only be able to see their own sessions but this solution shows all sessions from all users.
+There are four key elements of this solution: generating vectors, searching vectors, generating chat completions and storing chat conversations. Vectors are generated when data is inserted into PostgreSQL, then stored in an Azure Cognitive Search index that is used for vector searches. Users then ask natural language questions using the web-based chat user interface (User Prompts). These prompts are then vectorized and used to search the vectorized data. The results are then sent, along with some of the conversation history, to Azure OpenAI Service to generate a response (Completion) back to the user. All of the User Prompts and Completions are stored PostgreSQL along with the number of tokens consumed by each Prompt and Completion. A Chat Session contains all of the prompts and completions and a running total of all tokens consumed for that session. In a production environment users would only be able to see their own sessions but this solution shows all sessions from all users.
 
 ## Generating vectors
 
-Vectors are generated in Change Feed handler (GenericChangeFeedHandler() method) contained in the `VectorSearchAiAssistant.Service` project which monitors the changes in `customer` and `products` containers. As soon as a new document is inserted into either of these containers, the Change Feed handler will generate a vector and add the document and its embedding to the `vector-index` Cognitive Search index.
-
+Vectors are generated by running the accomping Data Loading project.
 
 ## Searching vectors
 
@@ -81,7 +80,7 @@ One thing to note here is it is necessary to separate the number of tokens from 
 
 The last part is to save the results of both the user prompt and completion as well as the amount of tokens used. All of the conversational history and the amount of tokens used in each prompt and completion is stored in the completions collection in the PostgreSQL database in this solution. The call to the service is made by another method within ChatService called [AddPromptCompletionMessagesAsync()](https://github.com/Azure/Vector-Search-AI-Assistant/blob/cognitive-search-vector/VectorSearchAiAssistant.Service/Services/ChatService.cs#L164). This method creates two new [Message](https://github.com/Azure/Vector-Search-AI-Assistant/blob/cognitive-search-vector/VectorSearchAiAssistant.Service/Models/Chat/Message.cs) objects and stores them in a local cache of all the Sessions and Messages for the application. It then adds up all of the tokens used in the [Session](https://github.com/Azure/Vector-Search-AI-Assistant/blob/cognitive-search-vector/VectorSearchAiAssistant.Service/Models/Chat/Session.cs) object which keeps a running total for the entire session.
 
-The data is then persisted to the Cosmos DB database in the [UpdateSessionBatchAsync()](https://github.com/Azure/Vector-Search-AI-Assistant/blob/cognitive-search-vector/VectorSearchAiAssistant.Service/Services/CosmosDbService.cs#L355) method. This method creates a new transaction then updates the Session document and inserts two new Message documents into the completions collection.
+The data is then persisted to the PostgreSQL database in the [UpdateSessionBatchAsync()](https://github.com/Azure/Vector-Search-AI-Assistant/blob/cognitive-search-vector/VectorSearchAiAssistant.Service/Services/CosmosDbService.cs#L355) method. This method updates the Session document and inserts two new Message documents into the completions tables.
 
 ## Getting Started
 
@@ -110,11 +109,6 @@ Here are some sample questions you can ask:
 - What kind of socks do you have available?
 - Do you have any customers from Canada? Where in Canada are they from?
 - What kinds of bikes are in your product inventory?
-
-### Real-time add and remove data
-
-One great reason for using an operational database like PostgreSQL as a source for your data in Generative AI applications is that you can leverage its
-Change Feed capability to dynamically add and remove records. The steps below can demonstrate this capability.
 
 #### Steps to demo adding and removing data from vector search
 
@@ -289,60 +283,6 @@ Also, make sure the newly created `appsettings.Development.json` file is copied 
 You are now ready to start debugging the solution locally. To do this, press `F5` or select `Debug > Start Debugging` from the menu.
 
 **NOTE**: With Visual Studio, you can also use alternate ways to manage the secrets and configuration. For example, you can use the `Manage User Secrets` option from the context menu of the `ChatWebServiceApi` project to open the `secrets.json` file and add the configuration values there.
-
-### Uploading New Sample Data
-
-To upload new data, or to extend the solution to ingest your own data that will be processed by the Change Feed and then made available as a context for chat completions, it's recommended to use the [Cosmos DB Desktop Migration Tool](https://github.com/AzureCosmosDB/data-migration-desktop-tool) to copy your source data into the appropriate container within the deployed instance of Cosmos DB. 
-
-Open a PowerShell and run the following lines to download and extract `dmt.exe`:
-```ps
-$dmtUrl="https://github.com/AzureCosmosDB/data-migration-desktop-tool/releases/download/2.1.1/dmt-2.1.1-win-x64.zip"
-Invoke-WebRequest -Uri $dmtUrl -OutFile dmt.zip
-Expand-Archive -Path dmt.zip -DestinationPath .
-```
-
-In the folder containing the extracted files, you will see a `migrationsettings.json` file. You will need to edit this file and provide the configuration for the source (e.g., your local files), and the sink (e.g., a container in Cosmos DB).
-
-Here is an example migrationsettings file setup to load a local JSON file, stored in a data folder, to a container in Cosmos DB. Edit this file to suit your needs and save it.
-
-```json
-{
-  "Source": "JSON",
-  "Sink": "Cosmos-nosql",
-  "Operations": [
-    {
-      "SourceSettings": {
-        "FilePath": "data\\sampleData.json"
-      },
-      "SinkSettings": {
-        "ConnectionString": "AccountEndpoint=YOUR_CONNECTION_STRING_HERE",
-        "Database":"database",
-        "Container":"raw",
-        "PartitionKeyPath":"/id",
-        "RecreateContainer": false,
-        "BatchSize": 100,
-        "ConnectionMode": "Direct",
-        "MaxRetryCount": 5,
-        "InitialRetryDurationMs": 200,
-        "CreatedContainerMaxThroughput": 1000,
-        "UseAutoscaleForCreatedContainer": true,
-        "WriteMode": "InsertStream",
-        "IsServerlessAccount": false
-        }
-    }
-  ]
-}
-```
-
-Then run the tool with the following command.
-
-```ps
-.\dmt.exe
-```
-
-Your new data should now be available in the configured container.
-
-NOTE: If you want to build a reusable, automated script to deploy your files, take a look at the `scripts/Import-Data.ps1` in the source code of this project.
 
 ## Clean-up
 
