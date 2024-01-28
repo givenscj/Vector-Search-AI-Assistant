@@ -13,17 +13,31 @@ namespace ChatServiceWebApi
 
             builder.Services.AddApplicationInsightsTelemetry();
 
+
+            /*
             builder.Services.AddOptions<CosmosDbSettings>()
                 .Bind(builder.Configuration.GetSection("MSCosmosDBOpenAI:CosmosDB"));
 
             builder.Services.AddOptions<CognitiveSearchSettings>()
                 .Bind(builder.Configuration.GetSection("MSCosmosDBOpenAI:CognitiveSearch"));
+            */
+
+            builder.Services.AddOptions<PostgreSQLSettings>()
+                .Bind(builder.Configuration.GetSection("MSCosmosDBOpenAI:PostgreSQL"));
+
+            builder.Services.AddOptions<PostgreSQLSearchSettings>()
+                .Bind(builder.Configuration.GetSection("MSCosmosDBOpenAI:PostgreSQL"));
+
 
             builder.Services.AddOptions<SemanticKernelRAGServiceSettings>()
                 .Bind(builder.Configuration.GetSection("MSCosmosDBOpenAI"));
 
-            builder.Services.AddSingleton<ICognitiveSearchService, CognitiveSearchService>();
-            builder.Services.AddSingleton<ICosmosDbService, CosmosDbService>();
+            //builder.Services.AddSingleton<ICognitiveSearchService, CognitiveSearchService>();
+            //builder.Services.AddSingleton<ICosmosDbService, CosmosDbService>();
+
+            builder.Services.AddSingleton<ICognitiveSearchService, PostgreSQLSearchService>();
+            builder.Services.AddSingleton<ICosmosDbService, PostgreSQLService>();
+
             builder.Services.AddSingleton<IRAGService, SemanticKernelRAGService>();
             builder.Services.AddSingleton<IChatService, ChatService>();
 
@@ -35,9 +49,15 @@ namespace ChatServiceWebApi
                 .Bind(builder.Configuration.GetSection("MSCosmosDBOpenAI:DurableSystemPrompt"));
             builder.Services.AddSingleton<ISystemPromptService, DurableSystemPromptService>();
 
+            /*
             builder.Services.AddOptions<AzureCognitiveSearchMemorySourceSettings>()
                 .Bind(builder.Configuration.GetSection("MSCosmosDBOpenAI:CognitiveSearchMemorySource"));
             builder.Services.AddTransient<IMemorySource, AzureCognitiveSearchMemorySource>();
+            */
+
+            builder.Services.AddOptions<PostgreSQLSearchMemorySourceSettings>()
+                .Bind(builder.Configuration.GetSection("MSCosmosDBOpenAI:PostgreSQLMemorySource"));
+            builder.Services.AddTransient<IMemorySource, PostgreSQLSearchMemorySource>();
 
             builder.Services.AddOptions<BlobStorageMemorySourceSettings>()
                 .Bind(builder.Configuration.GetSection("MSCosmosDBOpenAI:BlobStorageMemorySource"));

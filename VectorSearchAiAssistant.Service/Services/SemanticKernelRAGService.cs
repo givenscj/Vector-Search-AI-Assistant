@@ -5,7 +5,9 @@ using Microsoft.SemanticKernel.AI.ChatCompletion;
 using Microsoft.SemanticKernel.AI.Embeddings;
 using Microsoft.SemanticKernel.AI.TextCompletion;
 using Microsoft.SemanticKernel.Connectors.Memory.AzureCognitiveSearch;
+using Microsoft.SemanticKernel.Connectors.Postgres;
 using Microsoft.SemanticKernel.Plugins.Memory;
+
 using Newtonsoft.Json;
 using System.Text.RegularExpressions;
 using VectorSearchAiAssistant.SemanticKernel.Chat;
@@ -61,6 +63,18 @@ public class SemanticKernelRAGService : IRAGService
 
         builder.WithLoggerFactory(loggerFactory);
 
+        /*
+        builder.WithAzureOpenAITextEmbeddingGenerationService(
+            _settings.OpenAI.EmbeddingsDeployment,
+            _settings.OpenAI.Endpoint,
+            _settings.OpenAI.Key);
+
+        builder.WithAzureOpenAIChatCompletionService(
+            _settings.OpenAI.CompletionsDeployment,
+            _settings.OpenAI.Endpoint,
+            _settings.OpenAI.Key);
+        */
+
         builder.WithAzureTextEmbeddingGenerationService(
             _settings.OpenAI.EmbeddingsDeployment,
             _settings.OpenAI.Endpoint,
@@ -70,15 +84,16 @@ public class SemanticKernelRAGService : IRAGService
             _settings.OpenAI.CompletionsDeployment,
             _settings.OpenAI.Endpoint,
             _settings.OpenAI.Key);
+        
 
         _semanticKernel = builder.Build();
 
         // The long-term memory uses an Azure Cognitive Search memory store
         _longTermMemory = new VectorMemoryStore(
-            _settings.CognitiveSearch.IndexName,
-            new AzureCognitiveSearchMemoryStore(
-                _settings.CognitiveSearch.Endpoint,
-                _settings.CognitiveSearch.Key),
+            _settings.PostgreSQLSearch.IndexName,
+            new PostgresMemoryStore(
+                _settings.PostgreSQLSearch.ConnectionString,
+                _settings.PostgreSQLSearch.VectorSize),
             _semanticKernel.GetService<ITextEmbeddingGeneration>(),
             loggerFactory.CreateLogger<VectorMemoryStore>());
 

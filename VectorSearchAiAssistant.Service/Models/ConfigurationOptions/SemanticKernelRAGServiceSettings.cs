@@ -19,5 +19,7 @@ namespace VectorSearchAiAssistant.Service.Models.ConfigurationOptions
 
         public required OpenAISettings OpenAI { get; init; }
         public required CognitiveSearchSettings CognitiveSearch { get; init; }
+        public required PostgreSQLSearchSettings PostgreSQLSearch { get; init; }
+
     }
 }

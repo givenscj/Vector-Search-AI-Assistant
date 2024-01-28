@@ -5,16 +5,16 @@ languages:
 products:
 - azure-cosmos-db
 - azure-openai
-name: Sample chat app using Azure Cosmos DB for NoSQL and Azure OpenAI
+name: Sample chat app using PostgreSQL and Azure OpenAI
 urlFragment: chat-app
-description: Sample application that implements multiple chat threads using the Azure OpenAI "text-davinci-003" model and Azure Cosmos DB for NoSQL for storage.
+description: Sample application that implements multiple chat threads using the Azure OpenAI "text-davinci-003" model and PostgreSQL for storage.
 azureDeploy: https://raw.githubusercontent.com/azure-samples/cosmosdb-chatgpt/main/azuredeploy.json
 ---
 
-# Azure Cosmos DB + OpenAI ChatGPT
+# PostgreSQL + OpenAI ChatGPT
 
-This sample application combines Azure Cosmos DB with OpenAI ChatGPT with a Blazor Server front-end for an intelligent chat bot application that shows off how you can build a 
-simple chat application with OpenAi ChatGPT and Azure Cosmos DB.
+This sample application combines PostgreSQL with OpenAI ChatGPT with a Blazor Server front-end for an intelligent chat bot application that shows off how you can build a 
+simple chat application with OpenAi ChatGPT and PostgreSQL.
 
 ![Cosmos DB + ChatGPT user interface](screenshot.png)
 
@@ -29,12 +29,12 @@ with the `OpenAiMaxTokens` value that is then translated to a maximum conversati
 
 Please note that the "text-davinci-003" model used by this sample has a maximum of 4096 tokens. Token are used in both the request and reponse from the service. Overriding the maxConversationLength to values approaching maximum token value could result in completions that contain little to no text if all of it has been used in the request.
 
-The history for all prompts and completions for each chat session is stored in Azure Cosmos DB. Deleting a chat session in the UI will delete it's corresponding data as well.
+The history for all prompts and completions for each chat session is stored in PostgreSQL. Deleting a chat session in the UI will delete it's corresponding data as well.
 
 The application will also summarize the name of the chat session by asking ChatGPT to provide a one or two word summary of the first prompt. This allows you to easily
 identity different chat sessions.
 
-Please note this is a sample application. It is intended to demonstrate how to use Azure Cosmos DB and Azure OpenAI ChatGPT together. It is not intended for production or other large scale use
+Please note this is a sample application. It is intended to demonstrate how to use PostgreSQL and Azure OpenAI ChatGPT together. It is not intended for production or other large scale use
 
 
 ## Getting Started
@@ -55,13 +55,13 @@ Please note this is a sample application. It is intended to demonstrate how to u
 
 
 The provided ARM or Bicep Template will provision the following resources:
-1. Azure Cosmos DB account with database and container at 400 RU/s. This can optionally be configured to run on the Cosmos DB free tier if available for your subscription.
+1. Azure Database for PostgreSQL Flexible Server.
 1. Azure App service. This will be configured for CI/CD to your forked GitHub repository. This service can also be configured to run on App Service free tier.
 1. Azure Open AI account. You must also specify a name for the deployment of the "text-davinci-003" model which is used by this application.
 
 Note: You must have access to Azure Open AI service from your subscription before attempting to deploy this application.
 
-All connection information for Azure Cosmos DB and Open AI is zero-touch and injected as environment variables in the Azure App Service instance at deployment time. 
+All connection information for PostgreSQL and Open AI is zero-touch and injected as environment variables in the Azure App Service instance at deployment time. 
 
 [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2FAzure-Samples%2Fcosmosdb-chatgpt%2Fmain%2Fazuredeploy.json)
 
@@ -79,7 +79,5 @@ To remove all the resources used by this sample, you must first manually delete 
 
 ## Resources
 
-- [Azure Cosmos DB + Azure OpenAI ChatGPT Blog Post Announcement](https://devblogs.microsoft.com/cosmosdb/)
-- [Azure Cosmos DB Free Trial](https://aka.ms/TryCosmos)
 - [Open AI Platform documentation](https://platform.openai.com/docs/introduction/overview)
 - [Azure Open AI Service documentation](https://learn.microsoft.com/azure/cognitive-services/openai/)

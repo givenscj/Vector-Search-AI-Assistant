@@ -5,8 +5,7 @@ namespace VectorSearchAiAssistant.Service.Interfaces;
 
 public interface ICosmosDbService
 {
-    bool IsInitialized { get; }
-
+    
     /// <summary>
     /// Gets a list of all current chat sessions.
     /// </summary>

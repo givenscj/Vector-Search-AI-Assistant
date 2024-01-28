@@ -8,18 +8,18 @@ using VectorSearchAiAssistant.Service.Interfaces;
 
 namespace VectorSearchAiAssistant.Service.MemorySource
 {
-    public class AzureCognitiveSearchMemorySource : IMemorySource
+    public class PostgreSQLSearchMemorySource : IMemorySource
     {
         private readonly ICognitiveSearchService _cognitiveSearchService;
-        private readonly AzureCognitiveSearchMemorySourceSettings _settings;
+        private readonly PostgreSQLSearchMemorySourceSettings _settings;
         private readonly ILogger _logger;
 
-        private AzureCognitiveSearchMemorySourceConfig _config;
+        private PostgreSQLSearchMemorySourceConfig _config;
 
-        public AzureCognitiveSearchMemorySource(
+        public PostgreSQLSearchMemorySource(
             ICognitiveSearchService cognitiveSearchService,
-            IOptions<AzureCognitiveSearchMemorySourceSettings> settings,
-            ILogger<AzureCognitiveSearchMemorySource> logger)
+            IOptions<PostgreSQLSearchMemorySourceSettings> settings,
+            ILogger<PostgreSQLSearchMemorySource> logger)
         {
             _cognitiveSearchService = cognitiveSearchService;
             _settings = settings.Value;
@@ -37,6 +37,8 @@ namespace VectorSearchAiAssistant.Service.MemorySource
             await EnsureConfig();
 
             var memories = new List<string>();
+
+            return memories;
 
             foreach (var memorySource in _config.FacetedQueryMemorySources)
             {
@@ -80,7 +82,7 @@ namespace VectorSearchAiAssistant.Service.MemorySource
                 var reader = new StreamReader(await blobClient.OpenReadAsync());
                 var configContent = await reader.ReadToEndAsync();
 
-                _config = JsonConvert.DeserializeObject<AzureCognitiveSearchMemorySourceConfig>(configContent);
+                _config = JsonConvert.DeserializeObject<PostgreSQLSearchMemorySourceConfig>(configContent);
             }
         }
     }

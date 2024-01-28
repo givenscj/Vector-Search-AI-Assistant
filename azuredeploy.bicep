@@ -8,8 +8,7 @@ param location string = 'eastus'
 
 @description('''
 Unique name for the deployed services below. Max length 15 characters, alphanumeric only:
-- Azure Cosmos DB for NoSQL
-- Azure Cosmos DB for MongoDB vCore
+- PostgreSQL Flexible Server
 - Azure OpenAI
 - Azure App Service
 - Azure Functions

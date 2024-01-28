@@ -16,15 +16,7 @@ public class ChatService : IChatService
     {
         get
         {
-            if (_cosmosDbService.IsInitialized && _ragService.IsInitialized)
-                return "ready";
-
             var status = new List<string>();
-
-            if (!_cosmosDbService.IsInitialized)
-                status.Add("CosmosDBService: initializing");
-            if (!_ragService.IsInitialized)
-                status.Add("SemanticKernelRAGService: initializing");
 
             return string.Join(",", status);
         }
