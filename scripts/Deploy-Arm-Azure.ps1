@@ -37,7 +37,7 @@ if ($rg.length -eq 0) {
 # Write-Host "AKS last version is $aksLastVersion" -ForegroundColor Yellow
 $aksLastVersion="1.27.3"
 
-$deploymentName = "cosmosdb-openai-azuredeploy"
+$deploymentName = "postgressql-openai-azuredeploy"
 
 Write-Host "Begining the ARM deployment..." -ForegroundColor Yellow
 Push-Location $sourceFolder

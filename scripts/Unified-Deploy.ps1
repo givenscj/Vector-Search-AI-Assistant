@@ -8,6 +8,7 @@ Param(
     [parameter(Mandatory=$false)][string]$armTemplate=$null,
     [parameter(Mandatory=$false)][string]$openAiName=$null,
     [parameter(Mandatory=$false)][string]$openAiRg=$null,
+    [parameter(Mandatory=$false)][string]$openAiSub=$null,
     [parameter(Mandatory=$false)][string]$openAiCompletionsDeployment=$null,
     [parameter(Mandatory=$false)][string]$openAiEmbeddingsDeployment=$null,
     [parameter(Mandatory=$false)][bool]$stepDeployArm=$true,
@@ -62,6 +63,9 @@ if (-not $resourcePrefix) {
 }
 
 if ($stepDeployOpenAi) {
+    if (-not $openAiSub) {
+        $openAiSub=$subscription
+    }
     if (-not $openAiRg) {
         $openAiRg=$resourceGroup
     }
@@ -78,8 +82,10 @@ if ($stepDeployOpenAi) {
         $openAiEmbeddingsDeployment = "embeddings"
     }
 
-    & ./Deploy-OpenAi.ps1 -name $openAiName -resourceGroup $openAiRg -location $location -completionsDeployment $openAiCompletionsDeployment -embeddingsDeployment $openAiEmbeddingsDeployment
+    & ./Deploy-OpenAi.ps1 -name $openAiName -resourceGroup $openAiRg -subscription $openAiSub -location $location -completionsDeployment $openAiCompletionsDeployment -embeddingsDeployment $openAiEmbeddingsDeployment
 }
+
+az account set --subscription $openAiSub
 
 ## Getting OpenAI info
 if ($openAiName) {
@@ -90,6 +96,8 @@ if ($openAiName) {
 }
 
 $openAiKey=$(az cognitiveservices account keys list -g $openAiRg -n $openAi.name -o json --query key1 | ConvertFrom-Json)
+
+az account set --subscription $subscription
 
 if ($stepDeployArm) {
 
@@ -178,7 +186,7 @@ if ($deployAks)
 }
 else
 {
-    $webappHostname=$(az deployment group show -g $resourceGroup -n cosmosdb-openai-azuredeploy -o json --query properties.outputs.webFqdn.value | ConvertFrom-Json)
+    $webappHostname=$(az deployment group show -g $resourceGroup -n postgressql-openai-azuredeploy -o json --query properties.outputs.webFqdn.value | ConvertFrom-Json)
 }
 
 Write-Host "===========================================================" -ForegroundColor Yellow

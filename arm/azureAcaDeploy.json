@@ -23,7 +23,7 @@
     },
     "name": {
       "type": "string",
-      "defaultValue": "[concat('h',uniqueString(resourceGroup().id) )]",
+      "defaultValue": "[uniqueString(resourceGroup().id)]",
       "maxLength": 15,
       "metadata": {
         "description": "Unique name for the deployed services below. Max length 15 characters, alphanumeric only:\r\n-The name defaults to a unique string generated from the resource group identifier.\r\n"

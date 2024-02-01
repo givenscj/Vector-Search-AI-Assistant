@@ -41,7 +41,7 @@ else {
     $acrLogin="bydtochatgptcr.azurecr.io"
 }
 
-$deploymentOutputs=$(az deployment group show -g $resourceGroup -n cosmosdb-openai-azuredeploy -o json --query properties.outputs | ConvertFrom-Json)
+$deploymentOutputs=$(az deployment group show -g $resourceGroup -n postgressql-openai-azuredeploy -o json --query properties.outputs | ConvertFrom-Json)
 
 validate
 

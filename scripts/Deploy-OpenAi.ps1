@@ -3,12 +3,15 @@
 Param(
     [parameter(Mandatory=$true)][string]$name,
     [parameter(Mandatory=$true)][string]$resourceGroup,
+    [parameter(Mandatory=$true)][string]$subscription,
     [parameter(Mandatory=$true)][string]$location,
     [parameter(Mandatory=$true)][string]$completionsDeployment,
     [parameter(Mandatory=$true)][string]$embeddingsDeployment
 )
 
 Push-Location $($MyInvocation.InvocationName | Split-Path)
+
+az account set --subscription $subscription
 
 if (-Not (az cognitiveservices account list -g $resourceGroup --query '[].name' -o json | ConvertFrom-Json) -Contains $name) {
     Write-Host("The Azure OpenAI account $($name) was not found, creating it...")
