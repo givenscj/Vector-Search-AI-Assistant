@@ -26,7 +26,7 @@ namespace VectorSearchAiAssistant.Service.Services
     /// <summary>
     /// Service to access PostgreSQL.
     /// </summary>
-    public class PostgreSQLService : ICosmosDbService
+    public class PostgreSQLService : IPostgreSQLService
     {
         private NpgsqlConnection _connection;
         private NpgsqlDataSource _dataSource;
@@ -67,8 +67,6 @@ namespace VectorSearchAiAssistant.Service.Services
             {
                 PropertyNamingPolicy = CosmosPropertyNamingPolicy.CamelCase
             };
-
-            //_connection = new NpgsqlConnection(connectionString: _settings.ConnectionString);
 
             var dataSourceBuilder = new NpgsqlDataSourceBuilder(_settings.ConnectionString);
             dataSourceBuilder.EnableDynamicJson();
@@ -116,16 +114,6 @@ namespace VectorSearchAiAssistant.Service.Services
                 {
                     string data = reader["data"].ToString();
                     Session s = JsonConvert.DeserializeObject<Session>(data);
-
-                    /*
-                    Session s = new Session();
-                    s.SessionId = (string)reader["SessionId"];
-                    s.Id = (string)reader["Id"];
-                    s.Messages = new List<Message>();
-                    s.Name = (string)reader["name"];
-                    s.TokensUsed = (int)reader["tokensUsed"];
-                    s.Type = (string)reader["type"];
-                    */
                     output.Add(s);
                 }
 

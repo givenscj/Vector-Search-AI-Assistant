@@ -10,18 +10,15 @@ namespace VectorSearchAiAssistant.Service.MemorySource
 {
     public class PostgreSQLSearchMemorySource : IMemorySource
     {
-        private readonly ICognitiveSearchService _cognitiveSearchService;
         private readonly PostgreSQLSearchMemorySourceSettings _settings;
         private readonly ILogger _logger;
 
         private PostgreSQLSearchMemorySourceConfig _config;
 
         public PostgreSQLSearchMemorySource(
-            ICognitiveSearchService cognitiveSearchService,
             IOptions<PostgreSQLSearchMemorySourceSettings> settings,
             ILogger<PostgreSQLSearchMemorySource> logger)
         {
-            _cognitiveSearchService = cognitiveSearchService;
             _settings = settings.Value;
             _logger = logger;
         }
@@ -34,56 +31,22 @@ namespace VectorSearchAiAssistant.Service.MemorySource
         /// <returns></returns>
         public async Task<List<string>> GetMemories()
         {
-            await EnsureConfig();
-
             var memories = new List<string>();
 
-            return memories;
+            //get list of all products
+            //TODO
 
-            foreach (var memorySource in _config.FacetedQueryMemorySources)
+            /*
+            foreach (var table in this._settings.Tables)
             {
-                var searchOptions = new SearchOptions
-                {
-                    Filter = memorySource.Filter,
-                    Size = 0
-                };
-                foreach (var facet in memorySource.Facets)
-                    searchOptions.Facets.Add(facet.Facet);
-
-                var facetTemplates = memorySource.Facets.ToDictionary(f => f.Facet.Split(',')[0], f => f.CountMemoryTemplate);
-
-                var result = await _cognitiveSearchService.SearchAsync(searchOptions);
-
-                long totalCount = 0;
-                foreach (var facet in result.Value.Facets)
-                {
-                    foreach (var facetResult in facet.Value)
-                    {
-                        memories.Add(string.Format(
-                            facetTemplates[facet.Key],
-                            facetResult.Value, facetResult.Count));
-                        totalCount += facetResult.Count.Value;
-                    }
-                }
-                //This is the faceted query for counting all the products
-                memories.Add(string.Format(memorySource.TotalCountMemoryTemplate, totalCount));
+                memories.Add(string.Format(facetTemplates[facet.Key],facetResult.Value, facetResult.Count));totalCount += facetResult.Count.Value;
             }
+            */
+
+            //This is the faceted query for counting all the products
+            //memories.Add(string.Format(memorySource.TotalCountMemoryTemplate, totalCount));
 
             return memories;
-        }
-
-        private async Task EnsureConfig()
-        {
-            if (_config  == null)
-            {
-                var blobServiceClient = new BlobServiceClient(_settings.ConfigBlobStorageConnection);
-                var storageClient = blobServiceClient.GetBlobContainerClient(_settings.ConfigBlobStorageContainer);
-                var blobClient = storageClient.GetBlobClient(_settings.ConfigFilePath);
-                var reader = new StreamReader(await blobClient.OpenReadAsync());
-                var configContent = await reader.ReadToEndAsync();
-
-                _config = JsonConvert.DeserializeObject<PostgreSQLSearchMemorySourceConfig>(configContent);
-            }
         }
     }
 }

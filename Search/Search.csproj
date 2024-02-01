@@ -8,9 +8,6 @@
     <UserSecretsId>86b98284-0715-492f-80de-95ad9057b2d4</UserSecretsId>
   </PropertyGroup>
   <ItemGroup>
-    <Content Remove="appsettings.development.json" />
-  </ItemGroup>
-  <ItemGroup>
     <_WebToolingArtifacts Remove="Properties\launchSettings.json" />
   </ItemGroup>
   <ItemGroup>

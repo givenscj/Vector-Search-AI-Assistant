@@ -34,20 +34,20 @@ var builder = Host.CreateApplicationBuilder(args);
 builder.Configuration.AddEnvironmentVariables();
 
 builder.Services.AddOptions<CosmosDbSettings>()
-    .Bind(builder.Configuration.GetSection("MSCosmosDBOpenAI:CosmosDB"));
+    .Bind(builder.Configuration.GetSection("MSPostgreSQLOpenAI:CosmosDB"));
 
 builder.Services.AddOptions<SemanticKernelRAGServiceSettings>()
-    .Bind(builder.Configuration.GetSection("MSCosmosDBOpenAI"));
+    .Bind(builder.Configuration.GetSection("MSPostgreSQLOpenAI"));
 
 builder.Services.AddSingleton<ICosmosDbService, CosmosDbService>();
 builder.Services.AddSingleton<IRAGService, SemanticKernelRAGService>();
 
 builder.Services.AddOptions<DurableSystemPromptServiceSettings>()
-    .Bind(builder.Configuration.GetSection("MSCosmosDBOpenAI:DurableSystemPrompt"));
+    .Bind(builder.Configuration.GetSection("MSPostgreSQLOpenAI:DurableSystemPrompt"));
 builder.Services.AddSingleton<ISystemPromptService, DurableSystemPromptService>();
 
 builder.Services.AddOptions<AzureCognitiveSearchMemorySourceSettings>()
-    .Bind(builder.Configuration.GetSection("MSCosmosDBOpenAI:CognitiveSearchMemorySource"));
+    .Bind(builder.Configuration.GetSection("MSPostgreSQLOpenAI:CognitiveSearchMemorySource"));
 
 var host = builder.Build();
 

@@ -36,7 +36,7 @@ static class ProgramExtensions
     public static void RegisterConfiguration(this WebApplicationBuilder builder)
     {
         builder.Services.AddOptions<ChatManagerSettings>()
-            .Bind(builder.Configuration.GetSection("MSCosmosDBOpenAI:ChatManager"));
+            .Bind(builder.Configuration.GetSection("MSPostgreSQLOpenAI:ChatManager"));
     }
 
     public static void RegisterServices(this IServiceCollection services)

@@ -14,29 +14,13 @@ namespace ChatServiceWebApi
             builder.Services.AddApplicationInsightsTelemetry();
 
 
-            /*
-            builder.Services.AddOptions<CosmosDbSettings>()
-                .Bind(builder.Configuration.GetSection("MSCosmosDBOpenAI:CosmosDB"));
-
-            builder.Services.AddOptions<CognitiveSearchSettings>()
-                .Bind(builder.Configuration.GetSection("MSCosmosDBOpenAI:CognitiveSearch"));
-            */
-
             builder.Services.AddOptions<PostgreSQLSettings>()
-                .Bind(builder.Configuration.GetSection("MSCosmosDBOpenAI:PostgreSQL"));
-
-            builder.Services.AddOptions<PostgreSQLSearchSettings>()
-                .Bind(builder.Configuration.GetSection("MSCosmosDBOpenAI:PostgreSQL"));
-
+                .Bind(builder.Configuration.GetSection("MSPostgreSQLOpenAI:PostgreSQL"));
 
             builder.Services.AddOptions<SemanticKernelRAGServiceSettings>()
-                .Bind(builder.Configuration.GetSection("MSCosmosDBOpenAI"));
+                .Bind(builder.Configuration.GetSection("MSPostgreSQLOpenAI"));
 
-            //builder.Services.AddSingleton<ICognitiveSearchService, CognitiveSearchService>();
-            //builder.Services.AddSingleton<ICosmosDbService, CosmosDbService>();
-
-            builder.Services.AddSingleton<ICognitiveSearchService, PostgreSQLSearchService>();
-            builder.Services.AddSingleton<ICosmosDbService, PostgreSQLService>();
+            builder.Services.AddSingleton<IPostgreSQLService, PostgreSQLService>();
 
             builder.Services.AddSingleton<IRAGService, SemanticKernelRAGService>();
             builder.Services.AddSingleton<IChatService, ChatService>();
@@ -46,21 +30,21 @@ namespace ChatServiceWebApi
 
             // System prompt service backed by an Azure blob storage account
             builder.Services.AddOptions<DurableSystemPromptServiceSettings>()
-                .Bind(builder.Configuration.GetSection("MSCosmosDBOpenAI:DurableSystemPrompt"));
+                .Bind(builder.Configuration.GetSection("MSPostgreSQLOpenAI:DurableSystemPrompt"));
             builder.Services.AddSingleton<ISystemPromptService, DurableSystemPromptService>();
 
             /*
             builder.Services.AddOptions<AzureCognitiveSearchMemorySourceSettings>()
-                .Bind(builder.Configuration.GetSection("MSCosmosDBOpenAI:CognitiveSearchMemorySource"));
+                .Bind(builder.Configuration.GetSection("MSPostgreSQLOpenAI:CognitiveSearchMemorySource"));
             builder.Services.AddTransient<IMemorySource, AzureCognitiveSearchMemorySource>();
             */
 
             builder.Services.AddOptions<PostgreSQLSearchMemorySourceSettings>()
-                .Bind(builder.Configuration.GetSection("MSCosmosDBOpenAI:PostgreSQLMemorySource"));
+                .Bind(builder.Configuration.GetSection("MSPostgreSQLOpenAI:PostgreSQLMemorySource"));
             builder.Services.AddTransient<IMemorySource, PostgreSQLSearchMemorySource>();
 
             builder.Services.AddOptions<BlobStorageMemorySourceSettings>()
-                .Bind(builder.Configuration.GetSection("MSCosmosDBOpenAI:BlobStorageMemorySource"));
+                .Bind(builder.Configuration.GetSection("MSPostgreSQLOpenAI:BlobStorageMemorySource"));
             builder.Services.AddTransient<IMemorySource, BlobStorageMemorySource>();
 
             builder.Services.AddScoped<ChatEndpoints>();
