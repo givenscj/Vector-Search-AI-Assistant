@@ -44,6 +44,7 @@ public interface IChatService
     /// </summary>
     Task<Message> RateMessageAsync(string id, string sessionId, bool? rating);
 
+    Task LoadData(string data, string type);
     Task AddProduct(Product product);
 
     Task AddCustomer(Customer customer);

@@ -56,6 +56,10 @@ namespace ChatServiceWebApi
                     await _chatService.SummarizeChatSessionNameAsync(sessionId, prompt))
                 .WithName("SummarizeChatSessionName");
 
+            app.MapPost("/load-data", async (string type, [FromBody] dynamic data) =>
+                    await _chatService.LoadData(data.ToString(), type))
+                .WithName("LoadData");
+
             app.MapPut("/products", async ([FromBody] Product product) =>
                     await _chatService.AddProduct(product))
                 .WithName("AddProduct");

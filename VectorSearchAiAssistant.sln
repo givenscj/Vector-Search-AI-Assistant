@@ -22,6 +22,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VectorSearchAiAssistant.Sem
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SKRAGTest", "SKRAGTest\SKRAGTest.csproj", "{129DBC32-DB2A-4F0F-B884-B6632ABA3AF7}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DataLoader", "DataLoader\DataLoader.csproj", "{17C55BC5-6D18-4939-AD1F-F2526E71A362}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -48,6 +50,10 @@ Global
 		{129DBC32-DB2A-4F0F-B884-B6632ABA3AF7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{129DBC32-DB2A-4F0F-B884-B6632ABA3AF7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{129DBC32-DB2A-4F0F-B884-B6632ABA3AF7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{17C55BC5-6D18-4939-AD1F-F2526E71A362}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{17C55BC5-6D18-4939-AD1F-F2526E71A362}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{17C55BC5-6D18-4939-AD1F-F2526E71A362}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{17C55BC5-6D18-4939-AD1F-F2526E71A362}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

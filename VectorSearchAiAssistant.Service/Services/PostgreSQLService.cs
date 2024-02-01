@@ -423,11 +423,12 @@ namespace VectorSearchAiAssistant.Service.Services
             using (connection)
             {
                 cmd.Connection= connection;
-                cmd.CommandText = $"insert into product values ('{product.id}', @p1)";
+                cmd.CommandText = $"insert into product (id, data) values ('{product.id}', @p1)" +
+                    $"ON CONFLICT (id) DO UPDATE SET data=@p1";
                 cmd.Parameters.AddWithValue("p1", NpgsqlDbType.Jsonb, product);
-                cmd.Parameters.Add(new NpgsqlParameter { ParameterName = "ret", Direction = System.Data.ParameterDirection.ReturnValue });
+                //cmd.Parameters.Add(new NpgsqlParameter { ParameterName = "ret", Direction = System.Data.ParameterDirection.ReturnValue });
                 await cmd.ExecuteNonQueryAsync();
-                product.id = cmd.Parameters["ret"].Value.ToString();
+                //product.id = cmd.Parameters["ret"].Value.ToString();
                 return product;
             }
 
@@ -446,11 +447,13 @@ namespace VectorSearchAiAssistant.Service.Services
 
             using (connection)
             {
-                cmd.CommandText = $"insert into customer values ('{customer.id}', @p1)";
+                cmd.Connection = connection;
+                cmd.CommandText = $"insert into customer values ('{customer.id}', @p1)" +
+                    $"ON CONFLICT (id) DO UPDATE SET data=@p1";
                 cmd.Parameters.AddWithValue("p1", NpgsqlDbType.Jsonb, customer);
-                cmd.Parameters.Add(new NpgsqlParameter { ParameterName = "ret", Direction = System.Data.ParameterDirection.ReturnValue });
+                //cmd.Parameters.Add(new NpgsqlParameter { ParameterName = "ret", Direction = System.Data.ParameterDirection.ReturnValue });
                 await cmd.ExecuteNonQueryAsync();
-                customer.id = cmd.Parameters["ret"].Value.ToString();
+                //customer.id = cmd.Parameters["ret"].Value.ToString();
                 return customer;
             }
 
@@ -469,11 +472,13 @@ namespace VectorSearchAiAssistant.Service.Services
 
             using (connection)
             {
-                cmd.CommandText = $"insert into salesorder values ('{salesOrder.id}', @p1)";
+                cmd.Connection = connection;
+                cmd.CommandText = $"insert into salesorder values ('{salesOrder.id}', @p1)" + 
+                    $"ON CONFLICT (id) DO UPDATE SET data=@p1";
                 cmd.Parameters.AddWithValue("p1", NpgsqlDbType.Jsonb, salesOrder);
-                cmd.Parameters.Add(new NpgsqlParameter { ParameterName = "ret", Direction = System.Data.ParameterDirection.ReturnValue });
+                //cmd.Parameters.Add(new NpgsqlParameter { ParameterName = "ret", Direction = System.Data.ParameterDirection.ReturnValue });
                 await cmd.ExecuteNonQueryAsync();
-                salesOrder.id = cmd.Parameters["ret"].Value.ToString();
+                //salesOrder.id = cmd.Parameters["ret"].Value.ToString();
                 return salesOrder;
             }
 
@@ -493,6 +498,7 @@ namespace VectorSearchAiAssistant.Service.Services
 
             using (connection)
             {
+                cmd.Connection = connection;
                 cmd.CommandText = $"delete from product where productId = {productId}";
                 await cmd.ExecuteNonQueryAsync();
             }

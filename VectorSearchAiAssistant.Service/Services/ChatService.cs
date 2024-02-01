@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
 using VectorSearchAiAssistant.Service.Constants;
 using VectorSearchAiAssistant.Service.Interfaces;
 using VectorSearchAiAssistant.Service.Models.Chat;
@@ -30,6 +31,42 @@ public class ChatService : IChatService
         _cosmosDbService = cosmosDbService;
         _ragService = ragService;
         _logger = logger;
+    }
+
+    public async Task LoadData(string data, string type)
+    {
+        dynamic json = JsonConvert.DeserializeObject(data);
+
+        foreach (dynamic obj in json)
+        {
+            if (obj == null)
+                continue;
+
+            try
+            {
+                if (type == "products")
+                {
+                    await _cosmosDbService.InsertProductAsync(obj.ToObject<Product>());
+                }
+                else
+                {
+                    switch (obj["type"].ToString())
+                    {
+                        case "customer":
+                            await _cosmosDbService.InsertCustomerAsync(obj.ToObject<Customer>());
+                            break;
+                        case "salesOrder":
+                            await _cosmosDbService.InsertSalesOrderAsync(obj.ToObject<SalesOrder>());
+                            break;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, $"Error loading data for type {type}.");
+            }
+        }
+
     }
 
     /// <summary>

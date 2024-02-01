@@ -26,9 +26,20 @@
       "defaultValue": "[concat('h',uniqueString(resourceGroup().id) )]",
       "maxLength": 15,
       "metadata": {
-        "description": "Unique name for the deployed services below. Max length 15 characters, alphanumeric only:\r\n- Azure Cosmos DB for NoSQL\r\n- Azure Cosmos DB for MongoDB vCore\r\n- Azure OpenAI\r\n- Azure App Service\r\n- Azure Functions\r\n\r\nThe name defaults to a unique string generated from the resource group identifier.\r\n"
+        "description": "Unique name for the deployed services below. Max length 15 characters, alphanumeric only:\r\n-The name defaults to a unique string generated from the resource group identifier.\r\n"
       }
     },
+    "administratorLogin": {
+      "type": "String",
+      "defaultValue": "wsuser",
+      "metadata": { "description": "" }
+    },
+    "administratorLoginPassword": {
+      "type": "String",
+      "defaultValue": "Solliance123",
+      "metadata": { "description": "" }
+    },
+    "vmSize": { "defaultValue": "Standard_E2s_v3", "type": "string" },
     "openAiEndpoint": {
       "type": "string",
       "metadata": {
@@ -89,33 +100,6 @@
         }
       }
     },
-    "cosmosContainers": {
-      "embeddingContainer": {
-        "name": "embedding",
-        "partitionKeyPath": "/id",
-        "maxThroughput": 1000
-      },
-      "completionsContainer": {
-        "name": "completions",
-        "partitionKeyPath": "/sessionId",
-        "maxThroughput": 1000
-      },
-      "productContainer": {
-        "name": "product",
-        "partitionKeyPath": "/categoryId",
-        "maxThroughput": 1000
-      },
-      "customerContainer": {
-        "name": "customer",
-        "partitionKeyPath": "/customerId",
-        "maxThroughput": 1000
-      },
-      "leasesContainer": {
-        "name": "leases",
-        "partitionKeyPath": "/id",
-        "maxThroughput": 1000
-      }
-    },
     "vnetSettings": {
       "name": "[format('{0}-vnet', parameters('name'))]",
       "addressPrefix": "10.244.0.0/16",
@@ -139,66 +123,32 @@
   },
   "resources": [
     {
-      "type": "Microsoft.DocumentDB/databaseAccounts",
-      "apiVersion": "2022-08-15",
-      "name": "[variables('cosmosDbSettings').name]",
-      "location": "[parameters('location')]",
-      "kind": "GlobalDocumentDB",
-      "properties": {
-        "consistencyPolicy": {
-          "defaultConsistencyLevel": "Session"
+        "type": "Microsoft.DBforPostgreSQL/flexibleServers",
+        "apiVersion": "2020-02-14-preview",
+        "name": "[format('{0}-pg16', parameters('name'))]",
+        "location": "[parameters('location')]",
+        "sku": {
+            "name": "Standard_D2s_v3",
+            "tier": "GeneralPurpose",
+            "capacity": 2
         },
-        "databaseAccountOfferType": "Standard",
-        "locations": [
-          {
-            "failoverPriority": 0,
-            "isZoneRedundant": false,
-            "locationName": "[parameters('location')]"
-          }
-        ]
-      }
-    },
-    {
-      "type": "Microsoft.DocumentDB/databaseAccounts/sqlDatabases",
-      "apiVersion": "2022-08-15",
-      "name": "[format('{0}/{1}', variables('cosmosDbSettings').name, variables('cosmosDbSettings').databaseName)]",
-      "properties": {
-        "resource": {
-          "id": "[variables('cosmosDbSettings').databaseName]"
+        "properties": {
+            "version": "16",
+            "haEnabled": "Disabled",
+            "createMode": "Default",
+            "administratorLogin": "[parameters('administratorLogin')]",
+            "administratorLoginPassword": "[parameters('administratorLoginPassword')]",
+            "storageProfile": {
+                "storageMB": 131072,
+                "backupRetentionDays": 7
+            },
+            "maintenanceWindow": {
+                "customWindow": "Disabled",
+                "dayOfWeek": 0,
+                "startHour": 0,
+                "startMinute": 0
+            }
         }
-      },
-      "dependsOn": [
-        "[resourceId('Microsoft.DocumentDB/databaseAccounts', variables('cosmosDbSettings').name)]"
-      ]
-    },
-    {
-      "copy": {
-        "name": "cosmosContainer",
-        "count": "[length(items(variables('cosmosContainers')))]"
-      },
-      "type": "Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers",
-      "apiVersion": "2022-08-15",
-      "name": "[format('{0}/{1}/{2}', variables('cosmosDbSettings').name, variables('cosmosDbSettings').databaseName, items(variables('cosmosContainers'))[copyIndex()].value.name)]",
-      "properties": {
-        "resource": {
-          "id": "[items(variables('cosmosContainers'))[copyIndex()].value.name]",
-          "partitionKey": {
-            "paths": [
-              "[items(variables('cosmosContainers'))[copyIndex()].value.partitionKeyPath]"
-            ],
-            "kind": "Hash",
-            "version": 2
-          }
-        },
-        "options": {
-          "autoscaleSettings": {
-            "maxThroughput": "[items(variables('cosmosContainers'))[copyIndex()].value.maxThroughput]"
-          }
-        }
-      },
-      "dependsOn": [
-        "[resourceId('Microsoft.DocumentDB/databaseAccounts/sqlDatabases', variables('cosmosDbSettings').name, variables('cosmosDbSettings').databaseName)]"
-      ]
     },
     // {
     //     "type": "Microsoft.CognitiveServices/accounts",
@@ -604,7 +554,6 @@
       "dependsOn": [
         "[resourceId('Microsoft.App/managedEnvironments', format('{0}acaenv', parameters('name')))]",
         "[resourceId('Microsoft.Search/searchServices', variables('cognitiveSearchSettings').name)]",
-        "[resourceId('Microsoft.DocumentDB/databaseAccounts', variables('cosmosDbSettings').name)]",
         "[resourceId('Microsoft.Storage/storageAccounts', format('{0}promptsa', parameters('name')))]"
       ],
       "identity": {
@@ -733,14 +682,6 @@
                           {
                               "name": "MSCosmosDBOpenAI__CosmosDB__ChangeFeedLeaseContainer",
                               "value": "leases"
-                          },
-                          {
-                              "name": "MSCosmosDBOpenAI__CosmosDB__Endpoint",
-                              "value": "[reference(resourceId('Microsoft.DocumentDB/databaseAccounts', variables('cosmosDbSettings').name), providers('Microsoft.DocumentDB', 'databaseAccounts').apiVersions[0]).documentEndpoint]"
-                          },
-                          {
-                              "name": "MSCosmosDBOpenAI__CosmosDB__Key",
-                              "value": "[listKeys(resourceId('Microsoft.DocumentDB/databaseAccounts', variables('cosmosDbSettings').name), providers('Microsoft.DocumentDB', 'databaseAccounts').apiVersions[0]).primaryMasterKey]"
                           },
                           {
                               "name": "MSCosmosDBOpenAI__DurableSystemPrompt__BlobStorageContainer",

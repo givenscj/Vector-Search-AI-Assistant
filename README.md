@@ -2,7 +2,7 @@
 
 This solution demonstrates how to design and implement a RAG Pattern solution that incorporates PostgreSQL with Azure OpenAI Service and Azure Cognitive Search to build a vector search solution with an AI assistant user interface. The solution shows how to generate vectors on data stored in PostgreSQL using Azure OpenAI Service, how to implement vector search using the vector search capability of Azure Cognitive Search and get the response from Azure OpenAI Service's ChatGPT using the matched documents as a context. The solution includes the frontend and backend components hosted on Azure Kubernetes Service. The solution also showcases key concepts such as managing conversational context and history, managing tokens consumed by Azure OpenAI Service, as well as understanding how to write prompts for large language models such as ChatGPT so they produce the desired responses.
 
-The scenario for this sample centers around a consumer retail "Intelligent Agent" that allows users to ask questions on vectorized product, customer and sales order data stored in the database. The data in this solution is the [Cosmic Works](https://github.com/azurecosmosdb/cosmicworks) sample for Azure Cosmos DB. This data is an adapted subset of the [Adventure Works 2017 dataset](https://learn.microsoft.com/en-us/sql/samples/adventureworks-install-configure?view=sql-server-ver16&tabs=ssms) for a retail bike shop that sells bicycles, biking accessories, components and clothing.
+The scenario for this sample centers around a consumer retail "Intelligent Agent" that allows users to ask questions on vectorized product, customer and sales order data stored in the database. The data in this solution is the [Cosmic Works](https://github.com/azurecosmosdb/cosmicworks) sample. This data is an adapted subset of the [Adventure Works 2017 dataset](https://learn.microsoft.com/en-us/sql/samples/adventureworks-install-configure?view=sql-server-ver16&tabs=ssms) for a retail bike shop that sells bicycles, biking accessories, components and clothing.  It has been ported over to PostgreSQL.
 
 ## What is RAG?
 
@@ -184,7 +184,7 @@ This solution can be run locally post Azure deployment. To do so, use the steps 
         }
         },
         "AllowedHosts": "*",
-        "MSCosmosDBOpenAI": {
+        "MSPostgreSQLOpenAI": {
             "ChatManager": {
                 "APIUrl": "https://localhost:63279",
                 "APIRoutePrefix": ""
@@ -204,7 +204,7 @@ This solution can be run locally post Azure deployment. To do so, use the steps 
             }
         },
         "AllowedHosts": "*",
-        "MSCosmosDBOpenAI": {
+        "MSPostgreSQLOpenAI": {
             "CognitiveSearch": {
                 "IndexName": "vector-index",
                 "MaxVectorSearchResults": 10
@@ -226,11 +226,6 @@ This solution can be run locally post Azure deployment. To do so, use the steps 
                     "MessagesMaxTokens": 3000
                 }
             },
-            "CosmosDB": {
-                "Containers": "completions, customer, product",
-                "Database": "database",
-                "ChangeFeedLeaseContainer": "leases"
-            },
             "DurableSystemPrompt": {
                 "BlobStorageContainer": "system-prompt"
             }
@@ -242,17 +237,13 @@ This solution can be run locally post Azure deployment. To do so, use the steps 
 
     ```json
     {
-        "MSCosmosDBOpenAI": {
+        "MSPostgreSQLOpenAI": {
             "CognitiveSearch": {
                 "Endpoint": "https://<...>.search.windows.net",
                 "Key": "<...>"
             },
             "OpenAI": {
                 "Endpoint": "https://<...>.openai.azure.com/",
-                "Key": "<...>"
-            },
-            "CosmosDB": {
-                "Endpoint": "https://<...>.documents.azure.com:443/",
                 "Key": "<...>"
             },
             "DurableSystemPrompt": {
