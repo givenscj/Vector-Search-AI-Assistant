@@ -66,10 +66,6 @@
     }
   },
   "variables": {
-    "cosmosDbSettings": {
-      "name": "[format('{0}-cosmos-nosql', parameters('name'))]",
-      "databaseName": "database"
-    },
     "cognitiveSearchSettings": {
       "name": "[format('{0}-cog-search', parameters('name'))]",
       "sku": "basic"
@@ -592,139 +588,139 @@
                               "value": "Production"
                           },
                           {
-                              "name": "MSCosmosDBOpenAI__CognitiveSearch__IndexName",
+                              "name": "MSPostgreSQLOpenAI__CognitiveSearch__IndexName",
                               "value": "vector-index"
                           },
                           {
-                              "name": "MSCosmosDBOpenAI__CognitiveSearch__MaxVectorSearchResults",
+                              "name": "MSPostgreSQLOpenAI__CognitiveSearch__MaxVectorSearchResults",
                               "value": "10"
                           },
                           {
-                              "name": "MSCosmosDBOpenAI__CognitiveSearch__Endpoint",
+                              "name": "MSPostgreSQLOpenAI__CognitiveSearch__Endpoint",
                               "value": "[concat('https://', variables('cognitiveSearchSettings').name, '.search.windows.net/')]"
                           },
                           {
-                              "name": "MSCosmosDBOpenAI__CognitiveSearch__Key",
+                              "name": "MSPostgreSQLOpenAI__CognitiveSearch__Key",
                               "value": "[listAdminKeys(resourceId('Microsoft.Search/searchServices', variables('cognitiveSearchSettings').name), '2022-09-01').primaryKey]"
                           },
                           {
-                              "name": "MSCosmosDBOpenAI__OpenAI__CompletionsDeployment",
+                              "name": "MSPostgreSQLOpenAI__OpenAI__CompletionsDeployment",
                               "value": "[parameters('openAiCompletionsDeployment')]"
                           },
                           {
-                              "name": "MSCosmosDBOpenAI__OpenAI__CompletionsDeploymentMaxTokens",
+                              "name": "MSPostgreSQLOpenAI__OpenAI__CompletionsDeploymentMaxTokens",
                               "value": "8096"
                           },
                           {
-                              "name": "MSCosmosDBOpenAI__OpenAI__EmbeddingsDeployment",
+                              "name": "MSPostgreSQLOpenAI__OpenAI__EmbeddingsDeployment",
                               "value": "[parameters('openAiEmbeddingsDeployment')]"
                           },
                           {
-                              "name": "MSCosmosDBOpenAI__OpenAI__EmbeddingsDeploymentMaxTokens",
+                              "name": "MSPostgreSQLOpenAI__OpenAI__EmbeddingsDeploymentMaxTokens",
                               "value": "8191"
                           },
                           {
-                              "name": "MSCosmosDBOpenAI__OpenAI__ChatCompletionPromptName",
+                              "name": "MSPostgreSQLOpenAI__OpenAI__ChatCompletionPromptName",
                               "value": "RetailAssistant.Default"
                           },
                           {
-                              "name": "MSCosmosDBOpenAI__OpenAI__ShortSummaryPromptName",
+                              "name": "MSPostgreSQLOpenAI__OpenAI__ShortSummaryPromptName",
                               "value": "Summarizer.TwoWords"
                           },
                           {
-                              "name": "MSCosmosDBOpenAI__OpenAI__PromptOptimization__CompletionsMinTokens",
+                              "name": "MSPostgreSQLOpenAI__OpenAI__PromptOptimization__CompletionsMinTokens",
                               "value": "50"
                           },
                           {
-                              "name": "MSCosmosDBOpenAI__OpenAI__PromptOptimization__CompletionsMaxTokens",
+                              "name": "MSPostgreSQLOpenAI__OpenAI__PromptOptimization__CompletionsMaxTokens",
                               "value": "300"
                           },
                           {
-                              "name": "MSCosmosDBOpenAI__OpenAI__PromptOptimization__SystemMaxTokens",
+                              "name": "MSPostgreSQLOpenAI__OpenAI__PromptOptimization__SystemMaxTokens",
                               "value": "1500"
                           },
                           {
-                              "name": "MSCosmosDBOpenAI__OpenAI__PromptOptimization__MemoryMinTokens",
+                              "name": "MSPostgreSQLOpenAI__OpenAI__PromptOptimization__MemoryMinTokens",
                               "value": "1500"
                           },
                           {
-                              "name": "MSCosmosDBOpenAI__OpenAI__PromptOptimization__MemoryMaxTokens",
+                              "name": "MSPostgreSQLOpenAI__OpenAI__PromptOptimization__MemoryMaxTokens",
                               "value": "7000"
                           },
                           {
-                              "name": "MSCosmosDBOpenAI__OpenAI__PromptOptimization__MessagesMinTokens",
+                              "name": "MSPostgreSQLOpenAI__OpenAI__PromptOptimization__MessagesMinTokens",
                               "value": "100"
                           },
                           {
-                              "name": "MSCosmosDBOpenAI__OpenAI__PromptOptimization__MessagesMaxTokens",
+                              "name": "MSPostgreSQLOpenAI__OpenAI__PromptOptimization__MessagesMaxTokens",
                               "value": "200"
                           },
                           {
-                              "name": "MSCosmosDBOpenAI__OpenAI__Endpoint",
+                              "name": "MSPostgreSQLOpenAI__OpenAI__Endpoint",
                               "value": "[parameters('openAiEndpoint')]"
                           },
                           {
-                              "name": "MSCosmosDBOpenAI__OpenAI__Key",
+                              "name": "MSPostgreSQLOpenAI__OpenAI__Key",
                               "value": "[parameters('openAiKey')]"
                           },
                           {
-                              "name": "MSCosmosDBOpenAI__CosmosDB__Containers",
+                              "name": "MSPostgreSQLOpenAI__CosmosDB__Containers",
                               "value": "completions, customer, product"
                           },
                           {
-                              "name": "MSCosmosDBOpenAI__CosmosDB__MonitoredContainers",
+                              "name": "MSPostgreSQLOpenAI__CosmosDB__MonitoredContainers",
                               "value": "customer, product"
                           },
                           {
-                              "name": "MSCosmosDBOpenAI__CosmosDB__Database",
+                              "name": "MSPostgreSQLOpenAI__CosmosDB__Database",
                               "value": "database"
                           },
                           {
-                              "name": "MSCosmosDBOpenAI__CosmosDB__ChangeFeedLeaseContainer",
+                              "name": "MSPostgreSQLOpenAI__CosmosDB__ChangeFeedLeaseContainer",
                               "value": "leases"
                           },
                           {
-                              "name": "MSCosmosDBOpenAI__DurableSystemPrompt__BlobStorageContainer",
+                              "name": "MSPostgreSQLOpenAI__DurableSystemPrompt__BlobStorageContainer",
                               "value": "system-prompt"
                           },
                           {
-                              "name": "MSCosmosDBOpenAI__DurableSystemPrompt__BlobStorageConnection",
+                              "name": "MSPostgreSQLOpenAI__DurableSystemPrompt__BlobStorageConnection",
                               "value": "[concat('DefaultEndpointsProtocol=https;AccountName=', format('{0}promptsa', parameters('name')), ';AccountKey=', listKeys(resourceId('Microsoft.Storage/storageAccounts', format('{0}promptsa', parameters('name'))), providers('Microsoft.Storage', 'storageAccounts').apiVersions[0]).keys[0].value, ';EndpointSuffix=core.windows.net')]"
                           },
                           {
-                              "name": "MSCosmosDBOpenAI__CognitiveSearchMemorySource__IndexName",
+                              "name": "MSPostgreSQLOpenAI__CognitiveSearchMemorySource__IndexName",
                               "value": "vector-index"
                           },
                           {
-                              "name": "MSCosmosDBOpenAI__CognitiveSearchMemorySource__ConfigBlobStorageContainer",
+                              "name": "MSPostgreSQLOpenAI__CognitiveSearchMemorySource__ConfigBlobStorageContainer",
                               "value": "memory-source"
                           },
                           {
-                              "name": "MSCosmosDBOpenAI__CognitiveSearchMemorySource__ConfigFilePath",
+                              "name": "MSPostgreSQLOpenAI__CognitiveSearchMemorySource__ConfigFilePath",
                               "value": "ACSMemorySourceConfig.json"
                           },
                           {
-                              "name": "MSCosmosDBOpenAI__CognitiveSearchMemorySource__Endpoint",
+                              "name": "MSPostgreSQLOpenAI__CognitiveSearchMemorySource__Endpoint",
                               "value": "[concat('https://', variables('cognitiveSearchSettings').name, '.search.windows.net/')]"
                           },
                           {
-                              "name": "MSCosmosDBOpenAI__CognitiveSearchMemorySource__Key",
+                              "name": "MSPostgreSQLOpenAI__CognitiveSearchMemorySource__Key",
                               "value": "[listAdminKeys(resourceId('Microsoft.Search/searchServices', variables('cognitiveSearchSettings').name), '2022-09-01').primaryKey]"
                           },
                           {
-                              "name": "MSCosmosDBOpenAI__CognitiveSearchMemorySource__ConfigBlobStorageConnection",
+                              "name": "MSPostgreSQLOpenAI__CognitiveSearchMemorySource__ConfigBlobStorageConnection",
                               "value": "[concat('DefaultEndpointsProtocol=https;AccountName=', format('{0}promptsa', parameters('name')), ';AccountKey=', listKeys(resourceId('Microsoft.Storage/storageAccounts', format('{0}promptsa', parameters('name'))), providers('Microsoft.Storage', 'storageAccounts').apiVersions[0]).keys[0].value, ';EndpointSuffix=core.windows.net')]"
                           },
                           {
-                              "name": "MSCosmosDBOpenAI__BlobStorageMemorySource__ConfigBlobStorageContainer",
+                              "name": "MSPostgreSQLOpenAI__BlobStorageMemorySource__ConfigBlobStorageContainer",
                               "value": "memory-source"
                           },
                           {
-                              "name": "MSCosmosDBOpenAI__BlobStorageMemorySource__ConfigFilePath",
+                              "name": "MSPostgreSQLOpenAI__BlobStorageMemorySource__ConfigFilePath",
                               "value": "BlobMemorySourceConfig.json"
                           },
                           {
-                              "name": "MSCosmosDBOpenAI__BlobStorageMemorySource__ConfigBlobStorageConnection",
+                              "name": "MSPostgreSQLOpenAI__BlobStorageMemorySource__ConfigBlobStorageConnection",
                               "value": "[concat('DefaultEndpointsProtocol=https;AccountName=', format('{0}promptsa', parameters('name')), ';AccountKey=', listKeys(resourceId('Microsoft.Storage/storageAccounts', format('{0}promptsa', parameters('name'))), providers('Microsoft.Storage', 'storageAccounts').apiVersions[0]).keys[0].value, ';EndpointSuffix=core.windows.net')]"
                           },
                           {
@@ -796,11 +792,11 @@
                               "value": "Production"
                           },
                           {
-                              "name": "MSCosmosDBOpenAI__ChatManager__APIRoutePrefix",
+                              "name": "MSPostgreSQLOpenAI__ChatManager__APIRoutePrefix",
                               "value": ""
                           },
                           {
-                              "name": "MSCosmosDBOpenAI__ChatManager__APIUrl",
+                              "name": "MSPostgreSQLOpenAI__ChatManager__APIUrl",
                               "value": "[concat('https://', reference(resourceId('Microsoft.App/containerApps', format('{0}chatapiaca', parameters('name'))), providers('Microsoft.App', 'containerApps').apiVersions[0]).configuration.ingress.fqdn)]"
                           },
                           {

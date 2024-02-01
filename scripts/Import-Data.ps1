@@ -1,6 +1,6 @@
 Param(
     [parameter(Mandatory=$true)][string]$resourceGroup,
-    [parameter(Mandatory=$true)][string]$cosmosDbAccountName
+    [parameter(Mandatory=$true)][string]$pgName
 )
 
 Push-Location $($MyInvocation.InvocationName | Split-Path)

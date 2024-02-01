@@ -34,6 +34,7 @@ namespace DataLoader
             IHost host = builder.Build();
 
             DataLoader p = host.Services.GetService<DataLoader>();
+            p.ApiUrl = config.GetSection("MSPostgreSQLOpenAI:PostgreSQL:DataLoader").GetValue<string>("ApiUrl");
             p.LoadData().Wait();
 
             host.Run();

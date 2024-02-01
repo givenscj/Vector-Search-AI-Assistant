@@ -118,13 +118,6 @@ if ($deployAks)
     # Write-Host "Retrieving credentials" -ForegroundColor Yellow
     az aks get-credentials -n $aksName -g $resourceGroup --overwrite-existing
 }
-else
-{
-    if ([string]::IsNullOrEmpty($cosmosDbAccountName))
-    {
-        $cosmosDbAccountName=$(az deployment group show -g $resourceGroup -n cosmosdb-openai-azuredeploy -o json --query properties.outputs.cosmosDbAccountName.value | ConvertFrom-Json)
-    }
-}
 
 # Generate Config
 New-Item -ItemType Directory -Force -Path $(./Join-Path-Recursively.ps1 -pathParts ..,__values)
@@ -176,7 +169,7 @@ if ($stepDeployImages) {
 
 if ($stepImportData) {
     # Import Data
-    & ./Import-Data.ps1 -resourceGroup $resourceGroup -cosmosDbAccountName $cosmosDbAccountName
+    & ./Import-Data.ps1 -resourceGroup $resourceGroup -pgName $pgName
 }
 
 if ($deployAks)
